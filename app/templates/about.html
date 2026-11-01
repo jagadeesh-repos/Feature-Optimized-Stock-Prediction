@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Method notes · Stock Crisis Prediction{% endblock %}
+{% block breadcrumb %}METHOD NOTES{% endblock %}
+{% block content %}
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">IMPLEMENTATION NOTES</p>
+        <h1>What the model estimates</h1>
+        <p class="subheading">A transparent account of the current project choices and their limits.</p>
+    </div>
+</section>
+<article class="method-notes">
+    <section>
+        <p class="eyebrow">TARGET</p>
+        <h2>Forward drawdown regression</h2>
+        <p>For each observed session, the target is the maximum non-negative decline from that session’s close to the
+            lowest low over the next user-specified number of observed sessions. The final rows without a full future
+            window remain unlabeled.</p>
+        <p>A threshold flag is derived by comparing the regression estimate with the user’s threshold. It is not a
+            calibrated probability.</p>
+    </section>
+    <section>
+        <p class="eyebrow">FEATURE SELECTION</p>
+        <h2>RFE plus Boruta</h2>
+        <p>The supplied project notebook uses recursive feature elimination with XGBoost and Boruta with a random
+            forest. The project selects the intersection, falling back to the union when the intersection is empty.
+            Selection is fit on training rows only.</p>
+    </section>
+    <section>
+        <p class="eyebrow">VALIDATION</p>
+        <h2>Chronological holdout</h2>
+        <p>Rows remain chronological. A horizon-sized gap is purged at split boundaries. The validation partition
+            controls early stopping; the test partition is reserved for final evaluation. DNN scaling is fit on training
+            rows only.</p>
+    </section>
+    <section class="method-warning">
+        <p class="eyebrow">RESEARCH LIMITATION</p>
+        <h2>Not an exact paper reproduction</h2>
+        <p>The full paper was not available to inspect. The accessible abstract describes regression and MSE/MAE/RMSE,
+            but does not establish exact per-stock crisis labels, dataset constituents, HFS configuration, or model
+            parameters. Current windows and settings are project implementation choices based on the supplied notebook,
+            not verified paper defaults.</p>
+    </section>
+</article>
+{% endblock %}

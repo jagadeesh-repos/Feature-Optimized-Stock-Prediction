@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#14211d">
+    <title>{% block title %}Stock Crisis Prediction{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" defer></script>
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+    <div class="app-shell">
+        <aside class="sidebar" aria-label="Main navigation">
+            <a class="brand" href="{{ url_for('main.index') }}">
+                <span class="brand-mark" aria-hidden="true">SC</span>
+                <span class="brand-copy"><strong>Stock Crisis</strong><small>Research desk</small></span>
+            </a>
+            <div class="nav-caption">WORKSPACE</div>
+            <nav class="primary-nav">
+                <a class="nav-link {% if request.endpoint == 'main.index' %}active{% endif %}"
+                    href="{{ url_for('main.index') }}"><span class="nav-icon" aria-hidden="true">◫</span>Dashboard</a>
+                <a class="nav-link {% if request.endpoint == 'main.reports_page' %}active{% endif %}"
+                    href="{{ url_for('main.reports_page') }}"><span class="nav-icon" aria-hidden="true">▤</span>Previous
+                    reports</a>
+                <a class="nav-link {% if request.endpoint == 'main.assistant_page' %}active{% endif %}"
+                    href="{{ url_for('main.assistant_page') }}"><span class="nav-icon" aria-hidden="true">◌</span>AI
+                    assistant</a>
+                <a class="nav-link {% if request.endpoint == 'main.about_page' %}active{% endif %}"
+                    href="{{ url_for('main.about_page') }}"><span class="nav-icon" aria-hidden="true">ⓘ</span>Method
+                    notes</a>
+            </nav>
+            <div class="sidebar-bottom">
+                <span class="live-dot" aria-hidden="true"></span>
+                <span>Local analysis environment</span>
+            </div>
+        </aside>
+        <main class="main-area">
+            <header class="topbar">
+                <div class="crumb">INDIA MARKETS <span>/</span> {% block breadcrumb %}OVERVIEW{% endblock %}</div>
+                <div class="topbar-status"><span class="status-pip" aria-hidden="true"></span>Model workspace ready
+                </div>
+            </header>
+            <div class="page-content">
+                {% block content %}{% endblock %}
+            </div>
+            <footer class="page-footer">
+                <span>Research implementation · Not investment advice</span>
+                <span>Forecasts are drawdown estimates, not calibrated probabilities</span>
+            </footer>
+        </main>
+    </div>
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

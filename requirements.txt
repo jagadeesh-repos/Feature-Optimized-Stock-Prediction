@@ -1,0 +1,15 @@
+# Install into a project-local virtual environment; see README.md.
+Flask>=3.0,<4.0
+Flask-SQLAlchemy>=3.1,<4.0
+python-dotenv>=1.0,<2.0
+pytest>=8.0,<9.0
+pandas>=2.2,<4.0
+yfinance>=0.2.65,<2.0
+scikit-learn>=1.5,<2.0
+xgboost>=2.1,<4.0
+Boruta>=0.4.3,<1.0
+joblib>=1.4,<2.0
+torch>=2.8,<3.0
+langgraph>=1.2,<2.0
+langgraph-checkpoint-sqlite>=3.1,<4.0
+langchain-groq>=1.1,<2.0

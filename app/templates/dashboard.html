@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · Stock Crisis Prediction{% endblock %}
+{% block breadcrumb %}DASHBOARD{% endblock %}
+{% block content %}
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">MARKET RISK RESEARCH</p>
+        <h1>Stock crisis analysis</h1>
+        <p class="subheading">Train on historical OHLCV data and inspect out-of-sample drawdown estimates.</p>
+    </div>
+    <div class="date-stamp"><span class="stamp-label">DATA PROVIDER</span><strong>Yahoo Finance</strong></div>
+</section>
+
+<section class="analysis-layout" aria-label="Analysis controls and results">
+    <aside class="analysis-panel">
+        <div class="panel-heading">
+            <div>
+                <p class="eyebrow">NEW RUN</p>
+                <h2>Analysis inputs</h2>
+            </div>
+            <span class="panel-index">01</span>
+        </div>
+        <form id="analysis-form" novalidate>
+            <label for="ticker">NSE ticker or index</label>
+            <input id="ticker" name="ticker" type="text" placeholder="RELIANCE.NS" maxlength="32" autocomplete="off"
+                required>
+
+            <div class="field-row">
+                <div>
+                    <label for="start-date">From date</label>
+                    <input id="start-date" name="start_date" type="date" required>
+                </div>
+                <div>
+                    <label for="end-date">To date</label>
+                    <input id="end-date" name="end_date" type="date" required>
+                </div>
+            </div>
+
+            <div class="field-row">
+                <div>
+                    <label for="crisis-threshold">Drawdown threshold</label>
+                    <div class="input-suffix"><input id="crisis-threshold" name="crisis_threshold_percent" type="number"
+                            min="0.01" max="99.99" step="0.01" placeholder="Required" required><span>%</span></div>
+                </div>
+                <div>
+                    <label for="prediction-horizon">Horizon</label>
+                    <div class="input-suffix"><input id="prediction-horizon" name="prediction_horizon" type="number"
+                            min="1" step="1" placeholder="Required" required><span>sessions</span></div>
+                </div>
+            </div>
+
+            <label for="selected-model">Regression model</label>
+            <select id="selected-model" name="selected_model">
+                <option value="both">Compare both</option>
+                <option value="xgboost">XGBoost</option>
+                <option value="dnn">PyTorch DNN</option>
+            </select>
+
+            <p class="form-note">Threshold and horizon are required because the paper’s per-stock defaults have not been
+                verified.</p>
+            <button id="analyze-button" class="button-primary" type="submit"><span class="button-label">Run
+                    analysis</span><span class="button-arrow" aria-hidden="true">↗</span></button>
+            <div id="analysis-message" class="form-message" role="status" aria-live="polite"></div>
+        </form>
+    </aside>
+
+    <div class="results-area">
+        <section id="empty-state" class="empty-state">
+            <div class="empty-glyph" aria-hidden="true">↗</div>
+            <p class="eyebrow">READY FOR A NEW SERIES</p>
+            <h2>Start with a ticker and date range</h2>
+            <p>Results will appear here after real market data is fetched and the models finish training.</p>
+        </section>
+
+        <section id="results" class="results-content" hidden>
+            <div class="result-heading">
+                <div>
+                    <p id="result-period" class="eyebrow">ANALYSIS REPORT</p>
+                    <h2 id="result-ticker">—</h2>
+                </div>
+                <a id="report-link" class="text-link" href="{{ url_for('main.reports_page') }}">Saved report <span
+                        aria-hidden="true">↗</span></a>
+            </div>
+            <div id="model-summary" class="model-summary"></div>
+
+            <section class="chart-section">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">PRICE HISTORY</p>
+                        <h3>Daily close</h3>
+                    </div><span class="chart-unit">IN PROVIDER CURRENCY</span>
+                </div>
+                <div class="chart-wrap chart-wrap-large"><canvas id="price-chart"
+                        aria-label="Historical closing prices"></canvas></div>
+            </section>
+
+            <section class="chart-section">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">HELD-OUT TEST PERIOD</p>
+                        <h3>Actual vs estimated drawdown</h3>
+                    </div><span class="chart-unit">NOT A PROBABILITY</span>
+                </div>
+                <div class="chart-wrap"><canvas id="drawdown-chart"
+                        aria-label="Actual and estimated test drawdowns"></canvas></div>
+            </section>
+
+            <section class="chart-section">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">THRESHOLD EVENTS</p>
+                        <h3>Actual vs predicted event flags</h3>
+                    </div><span class="chart-unit">TEST LABELS ONLY</span>
+                </div>
+                <div class="chart-wrap chart-wrap-compact"><canvas id="event-chart"
+                        aria-label="Actual and predicted crisis threshold events"></canvas></div>
+            </section>
+
+            <section class="chart-section">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">MODEL DIAGNOSTICS</p>
+                        <h3>Feature importance</h3>
+                    </div><span id="importance-note" class="chart-unit"></span>
+                </div>
+                <div class="chart-wrap chart-wrap-compact"><canvas id="importance-chart"
+                        aria-label="XGBoost feature importance"></canvas></div>
+            </section>
+
+            <section class="chart-section">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">FEATURE SELECTION</p>
+                        <h3>Selected input features</h3>
+                    </div><span class="chart-unit">TRAINING DATA ONLY</span>
+                </div>
+                <ul id="selected-feature-list" class="selected-feature-list"></ul>
+            </section>
+
+            <section class="chart-section">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">MODEL COMPARISON</p>
+                        <h3>Held-out regression metrics</h3>
+                    </div><span class="chart-unit">LOWER IS BETTER</span>
+                </div>
+                <div class="chart-wrap chart-wrap-compact"><canvas id="metrics-chart"
+                        aria-label="Comparison of model regression metrics"></canvas></div>
+            </section>
+
+            <div class="metrics-section">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">OUT-OF-SAMPLE</p>
+                        <h3>Regression metrics</h3>
+                    </div><span class="chart-unit">LOWER IS BETTER</span>
+                </div>
+                <div id="metrics-table" class="metrics-table"></div>
+            </div>
+            <p class="result-disclaimer">The latest estimate is the model’s forecast of maximum future drawdown over the
+                selected horizon. The threshold flag is derived from that estimate; it is not a calibrated crisis
+                probability.</p>
+        </section>
+    </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/charts.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}" defer></script>
+{% endblock %}

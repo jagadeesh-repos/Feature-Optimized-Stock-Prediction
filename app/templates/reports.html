@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Previous reports · Stock Crisis Prediction{% endblock %}
+{% block breadcrumb %}REPORTS{% endblock %}
+{% block content %}
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">SAVED ANALYSES</p>
+        <h1>Previous reports</h1>
+        <p class="subheading">Persisted model outputs and held-out evaluation results.</p>
+    </div>
+    <a class="button-secondary" href="{{ url_for('main.index') }}">New analysis <span aria-hidden="true">↗</span></a>
+</section>
+<section class="reports-section">
+    <div class="reports-toolbar">
+        <span id="reports-count">Loading reports…</span>
+        <div class="reports-actions">
+            <button id="compare-reports" class="button-quiet" type="button" disabled>Compare selected</button>
+            <button id="refresh-reports" class="button-quiet" type="button">Refresh</button>
+        </div>
+    </div>
+    <div class="table-scroll">
+        <table class="reports-table">
+            <thead>
+                <tr>
+                    <th><span class="visually-hidden">Select</span></th>
+                    <th>Ticker</th>
+                    <th>Period</th>
+                    <th>Models</th>
+                    <th>Threshold / horizon</th>
+                    <th>Created</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="reports-body">
+                <tr>
+                    <td colspan="7" class="table-empty">Loading saved reports…</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <section id="comparison-result" class="comparison-result" hidden aria-live="polite"></section>
+    <p id="reports-error" class="form-message" role="status" aria-live="polite"></p>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/reports.js') }}" defer></script>{% endblock %}
