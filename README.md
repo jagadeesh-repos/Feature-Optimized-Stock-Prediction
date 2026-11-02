@@ -14,7 +14,7 @@ The project is inspired by the research paper:
 Naik, Nagaraj and Mohan, Biju (2021). IEEE Access.  
 DOI: [10.1109/ACCESS.2021.3088999](https://doi.org/10.1109/ACCESS.2021.3088999)
 
-The application currently follows the supplied regression notebook as its implementation baseline. It predicts future downside drawdown estimates using XGBoost and a PyTorch-based Deep Neural Network (DNN).
+It predicts future downside drawdown estimates using XGBoost and a PyTorch-based Deep Neural Network (DNN).
 
 **Research note:** The current implementation should not be interpreted as an exact reproduction of the published paper. The paper's complete methodology and experimental configurations require independent verification.
 
@@ -115,7 +115,7 @@ The current implementation uses a combination of feature selection techniques:
 
 Feature selection is fitted using training data only.
 
-This is the project's implemented feature-selection approach and should not be assumed to be identical to the original paper's HFS methodology without verification.
+This is the project's implemented feature-selection approach and should not be assumed to be identical to the original paper's HFS methodology.
 
 ### 5. Machine Learning Model: XGBoost
 
@@ -377,16 +377,11 @@ DOI: [10.1109/ACCESS.2021.3088999](https://doi.org/10.1109/ACCESS.2021.3088999)
 
 ## Research Limitations
 
-The current application uses the supplied regression notebook as its implementation baseline.
-
 Its regression target, feature-selection configuration, model parameters, and evaluation workflow should not be presented as verified details of the published research paper.
 
 The complete paper methodology, original dataset, exact crisis-label definition, HFS configuration, and model settings require verification before claiming exact reproduction.
 
 ## Future Work
-
-- Verify and reproduce the complete methodology of the original IEEE Access paper.
-- Extend the regression baseline to a dedicated binary crisis-classification pipeline if required.
 - Explore additional macroeconomic and market indicators.
 - Improve model explainability.
 - Implement walk-forward validation and more extensive out-of-sample evaluation.
